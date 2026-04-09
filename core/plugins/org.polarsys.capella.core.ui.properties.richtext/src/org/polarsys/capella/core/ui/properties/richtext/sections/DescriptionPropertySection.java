@@ -56,7 +56,13 @@ public abstract class DescriptionPropertySection extends AbstractSection {
   public boolean shouldUseExtraSpace() {
     return true;
   }
-
+  
+  @Override
+  public int getMinimumHeight() {
+    // Required for extra space in Page of Sections
+    return 50;
+  }
+  
   /**
    * Create description widget.
    * 
