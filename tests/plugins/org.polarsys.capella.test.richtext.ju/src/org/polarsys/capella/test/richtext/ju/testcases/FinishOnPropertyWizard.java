@@ -23,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.polarsys.capella.core.data.ctx.SystemFunction;
 import org.polarsys.capella.core.libraries.model.ICapellaModel;
 import org.polarsys.capella.core.libraries.utils.ScopeModelWrapper;
-import org.polarsys.capella.core.ui.properties.richtext.fields.CapellaElementDescriptionGroup;
+import org.polarsys.capella.core.ui.properties.richtext.fields.ElementDescriptionGroup;
 import org.polarsys.capella.core.ui.properties.wizards.EditCapellaCustomPropertyWizard;
 import org.polarsys.capella.core.ui.properties.wizards.EditCapellaCustomPropertyWizardPage;
 import org.polarsys.capella.shared.id.handler.IScope;
@@ -72,7 +72,7 @@ public class FinishOnPropertyWizard extends BasicTestCase {
       }
     }
 
-    CapellaElementDescriptionGroup descriptionGroup = null;
+    ElementDescriptionGroup descriptionGroup = null;
 
     if (capellaPage != null) {
       Optional<CapellaDescriptionPropertySectionMock> descriptionSection = capellaPage.getSections().stream()

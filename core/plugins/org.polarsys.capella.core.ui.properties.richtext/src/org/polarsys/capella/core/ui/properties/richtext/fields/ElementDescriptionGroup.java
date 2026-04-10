@@ -53,7 +53,7 @@ import org.polarsys.kitalpha.richtext.widget.helper.MDERichtextWidgetHelper;
 /**
  * @author Joao Barata
  */
-public abstract class ElementDescriptionGroup {
+public class ElementDescriptionGroup {
 
   private static final String FAMILY_DEFERRED_REFRESH = CapellaUIPropertiesRichtextPlugin.PLUGIN_ID + ".refreshJobFamily"; //$NON-NLS-1$
 

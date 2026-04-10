@@ -15,7 +15,7 @@ package org.polarsys.capella.test.richtext.ju.mocks;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.polarsys.capella.core.ui.properties.richtext.fields.CapellaElementDescriptionGroup;
+import org.polarsys.capella.core.ui.properties.richtext.fields.ElementDescriptionGroup;
 import org.polarsys.capella.core.ui.properties.richtext.sections.CapellaDescriptionPropertySection;
 
 public class CapellaDescriptionPropertySectionMock extends CapellaDescriptionPropertySection {
@@ -27,7 +27,7 @@ public class CapellaDescriptionPropertySectionMock extends CapellaDescriptionPro
           (aTabbedPropertySheetPage != null) ? getWidgetFactory() : null, this);
   }
 
-  public CapellaElementDescriptionGroup getDescriptionGroup() {
+  public ElementDescriptionGroup getDescriptionGroup() {
     return descriptionGroup;
   }
 }

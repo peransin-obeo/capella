@@ -16,26 +16,27 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.sirius.viewpoint.DRepresentationDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.polarsys.capella.core.ui.properties.fields.AbstractSemanticField;
+import org.polarsys.capella.core.ui.properties.fields.TextAreaValueGroup;
 import org.polarsys.capella.core.ui.properties.richtext.RichtextManager;
-import org.polarsys.capella.core.ui.properties.richtext.fields.CapellaElementDescriptionGroup;
-import org.polarsys.capella.core.ui.properties.richtext.fields.FallbackDescriptionGroup;
+import org.polarsys.capella.core.ui.properties.richtext.fields.ElementDescriptionGroup;
 import org.polarsys.capella.core.ui.properties.sections.AbstractSection;
 import org.polarsys.kitalpha.richtext.common.util.MDERichTextHelper;
 
 public abstract class DescriptionPropertySection extends AbstractSection {
 
-  protected CapellaElementDescriptionGroup descriptionGroup;
+  protected ElementDescriptionGroup descriptionGroup;
 
   /**
    * In case Richtext is disabled, we replace Richtext widget by this text group.
    */
-  protected FallbackDescriptionGroup descriptionFallbackGroup;
+  protected TextAreaValueGroup descriptionFallbackGroup;
 
   /**
    * @see org.eclipse.ui.views.properties.tabbed.ISection#createControls(org.eclipse.swt.widgets.Composite,
@@ -71,13 +72,28 @@ public abstract class DescriptionPropertySection extends AbstractSection {
    */
   protected void createDescriptionWidget(TabbedPropertySheetWidgetFactory widgetFactory, Composite parent) {
     if (RichtextManager.getInstance().isRichTextEnabled()) {
-      descriptionGroup = new CapellaElementDescriptionGroup(parent, widgetFactory, this);
+      descriptionGroup = new ElementDescriptionGroup(parent, widgetFactory, this);
     } else {
-      descriptionFallbackGroup = new FallbackDescriptionGroup(parent, "", widgetFactory, true); //$NON-NLS-1$
+      descriptionFallbackGroup = new TextAreaValueGroup(parent, "", widgetFactory, true); //$NON-NLS-1$
       descriptionFallbackGroup.setDisplayedInWizard(isDisplayedInWizard());
     }
   }
 
+
+  /**
+   * Load the field for given element and given feature.
+   * 
+   * @param semanticElement
+   * @param semanticFeature
+   */
+  protected void loadFieldData(EObject semanticElement, EStructuralFeature semanticFeature) {
+    if (descriptionGroup != null) {
+      descriptionGroup.loadData(semanticElement, semanticFeature);
+    } else if (descriptionFallbackGroup != null) {
+      descriptionFallbackGroup.loadData(semanticElement, semanticFeature);
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */

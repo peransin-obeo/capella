@@ -12,117 +12,40 @@
  *******************************************************************************/
 package org.polarsys.capella.core.ui.properties.richtext.sections;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.sirius.viewpoint.DRepresentationDescriptor;
+import org.eclipse.sirius.viewpoint.description.DescriptionPackage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.progress.UIJob;
 import org.polarsys.capella.core.data.capellacore.CapellaElement;
+import org.polarsys.capella.core.data.capellacore.CapellacorePackage;
 import org.polarsys.capella.core.model.handler.helpers.CapellaAdapterHelper;
 
 /**
  * @author Joao Barata
  */
-public class CapellaDescriptionPropertySection extends DescriptionPropertySection {
-  /**
-   * Because of the description property section is used in both the view properties and the wizard dialog (when user
-   * double clicks on an capella element). We use here a static map to keep track of the instances of this class. The
-   * idea is: when a section in a wizard is disposed, the current opening section in the view properties could be
-   * notified to be refresh. (This is the bug we have with richtext editor)
-   */
-  private static Map<CapellaDescriptionPropertySection, EObject> mapDescriptionSectionToEObject = new HashMap<>();
-
+public class CapellaDescriptionPropertySection extends ReusableDescriptionPropertySection {
+ 
   /**
    * @see org.eclipse.jface.viewers.IFilter#select(java.lang.Object)
    */
   @Override
   public boolean select(Object toTest) {
     EObject eObj = CapellaAdapterHelper.resolveDescriptorOrBusinessObject(toTest);
-    return eObj instanceof CapellaElement || (eObj instanceof DRepresentationDescriptor);
+    return eObj instanceof CapellaElement 
+      || eObj instanceof DRepresentationDescriptor;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public void dispose() {
-    super.dispose();
-    // On disposing, remove the instance from the map
-    EObject element = mapDescriptionSectionToEObject.remove(this);
-    // If the disposing section is displayed in the wizard, then notify the section (if there is) in the view properties
-    // to be refreshed.
-    if (element != null && isDisplayedInWizard()) {
-      Set<CapellaDescriptionPropertySection> availableDescriptionSections = mapDescriptionSectionToEObject.keySet();
-      for (CapellaDescriptionPropertySection descriptionSection : availableDescriptionSections) {
-        if (descriptionSection != null && !descriptionSection.isDisplayedInWizard()) {
-          descriptionSection.refresh();
-          descriptionSection.aboutToBeShown();
-        }
-      }
+  protected EStructuralFeature getFieldFeature(EObject element) {
+    if (element instanceof CapellaElement) {
+      return CapellacorePackage.Literals.CAPELLA_ELEMENT__DESCRIPTION;
+    } else if (element instanceof DRepresentationDescriptor) {
+      return DescriptionPackage.Literals.DOCUMENTED_ELEMENT__DOCUMENTATION;
     }
-  }
-
-  DelayedSetDescription job = new DelayedSetDescription(Messages.CapellaDescriptionPropertySection_0);
-
-  /**
-   * Avoid consecutive loads if the selection is quickly changed
-   */
-  private class DelayedSetDescription extends UIJob {
-
-    EObject current = null;
-
-    public DelayedSetDescription(String name) {
-      super(name);
-      setSystem(true);
-    }
-
-    @Override
-    public boolean belongsTo(Object family) {
-      return DelayedSetDescription.class.getSimpleName().equals(family);
-    }
-
-    @Override
-    public IStatus runInUIThread(IProgressMonitor monitor) {
-      EObject element = current;
-
-      // On loading data, add the instance to the map.
-      if (null != descriptionGroup) {
-        if (element.eResource() != null) {
-          // If the element is no longer in a resource (for example in case of a
-          // connection lost with the server in Team4Capella usage) there is no reason to
-          // load (except to have some exception).
-          descriptionGroup.loadData(element);
-        }
-      } else if (descriptionFallbackGroup != null) {
-        if (element.eResource() != null) {
-          // If the element is no longer in a resource (for example in case of a
-          // connection lost with the server in Team4Capella usage) there is no reason to
-          // load (except to have some exception).
-          descriptionFallbackGroup.loadData(element);
-        }
-      }
-      return Status.OK_STATUS;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void loadData(EObject descriptorOrCapellaElement) {
-    super.loadData(descriptorOrCapellaElement);
-    mapDescriptionSectionToEObject.put(CapellaDescriptionPropertySection.this, descriptorOrCapellaElement);
-
-    job.current = descriptorOrCapellaElement;
-    job.schedule(100);
+    return null;
   }
 
   /**
@@ -133,13 +56,12 @@ public class CapellaDescriptionPropertySection extends DescriptionPropertySectio
   public void setInput(IWorkbenchPart part, ISelection selection) {
     super.setInput(part, selection);
     if (selection instanceof StructuredSelection) {
-      EObject elt = CapellaAdapterHelper
-          .resolveDescriptorOrBusinessObject(((StructuredSelection) selection).getFirstElement());
+      Object inputValue = ((StructuredSelection) selection).getFirstElement();
+      EObject elt = CapellaAdapterHelper.resolveDescriptorOrBusinessObject(inputValue);
 
       if (elt instanceof CapellaElement || elt instanceof DRepresentationDescriptor) {
         loadData(elt);
       }
     }
   }
-
 }

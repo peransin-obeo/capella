@@ -24,8 +24,10 @@ import org.polarsys.capella.core.data.capellacore.CapellacorePackage;
 /**
  * A customized description group.
  * 
+ * @deprecated this description group was only for CapellaDescriptionPropertySection but load logic was misplaced
  * @author Joao Barata
  */
+@Deprecated
 public class CapellaElementDescriptionGroup extends ElementDescriptionGroup {
 
   /**

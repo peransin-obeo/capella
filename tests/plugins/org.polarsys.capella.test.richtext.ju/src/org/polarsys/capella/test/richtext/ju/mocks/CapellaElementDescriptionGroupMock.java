@@ -15,9 +15,9 @@ package org.polarsys.capella.test.richtext.ju.mocks;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.polarsys.capella.core.ui.properties.richtext.fields.CapellaElementDescriptionGroup;
+import org.polarsys.capella.core.ui.properties.richtext.fields.ElementDescriptionGroup;
 
-public class CapellaElementDescriptionGroupMock extends CapellaElementDescriptionGroup {
+public class CapellaElementDescriptionGroupMock extends ElementDescriptionGroup {
 
   private boolean isSaved = false;
   

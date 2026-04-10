@@ -21,6 +21,13 @@ import org.polarsys.capella.core.data.capellacore.CapellaElement;
 import org.polarsys.capella.core.data.capellacore.CapellacorePackage;
 import org.polarsys.capella.core.ui.properties.fields.TextAreaValueGroup;
 
+/**
+ * A customized description group for plain text edition.
+ * 
+ * @deprecated this description group was only for CapellaDescriptionPropertySection but load logic was misplaced
+ * @author Joao Barata
+ */
+@Deprecated
 public class FallbackDescriptionGroup extends TextAreaValueGroup {
 
   public FallbackDescriptionGroup(Composite parent, String label, TabbedPropertySheetWidgetFactory widgetFactory) {
