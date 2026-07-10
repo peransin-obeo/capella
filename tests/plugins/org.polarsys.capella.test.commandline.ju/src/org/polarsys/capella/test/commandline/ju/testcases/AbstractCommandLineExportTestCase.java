@@ -24,6 +24,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.polarsys.capella.core.commandline.core.CommandLineConstants;
 import org.polarsys.capella.test.framework.api.BasicTestCase;
@@ -88,8 +90,16 @@ public abstract class AbstractCommandLineExportTestCase extends BasicTestCase {
   
   @Override
   protected void setUp() throws Exception {
+    cleanWorkspace();
     super.setUp();
     cleanExportResources();
+  }
+  
+  private static void cleanWorkspace() throws Exception {
+    for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+    	// Most Tests use reference Test resources directly.
+    	project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, null);
+    }
   }
   
   @Override
