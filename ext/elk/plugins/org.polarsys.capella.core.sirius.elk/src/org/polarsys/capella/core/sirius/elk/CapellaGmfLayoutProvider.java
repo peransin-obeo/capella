@@ -64,7 +64,6 @@ import org.eclipse.gmf.runtime.diagram.ui.services.layout.ILayoutNode;
 import org.eclipse.gmf.runtime.diagram.ui.services.layout.ILayoutNodeOperation;
 import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.sirius.diagram.DDiagram;
-import org.eclipse.sirius.diagram.description.CustomLayoutConfiguration;
 import org.eclipse.sirius.diagram.description.DiagramDescription;
 import org.eclipse.sirius.diagram.ui.tools.api.layout.provider.DefaultLayoutProvider;
 import org.eclipse.sirius.diagram.ui.tools.api.layout.provider.LayoutProvider;
@@ -92,12 +91,9 @@ public class CapellaGmfLayoutProvider extends DefaultLayoutProvider {
     
     private static final boolean DISABLED = Boolean.getBoolean(DISABLE_PROPERTY);
 
-    private static final List<String> LIMITED_LAYERED_DIAGRAM_DESCRIPTION_NAMES = List.of(
-            LOGICAL_DATA_FLOW_BLANK_DIAGRAM_NAME, OPERATIONAL_ACTIVITY_INTERACTION_BLANK_DIAGRAM_NAME, PHYSICAL_ARCHITECTURE_BLANK_DIAGRAM_NAME
-    );
     
-    /** List of diagrams using Layered algorithm. */
-    private static final List<String> LAYERED_DIAGRAM_DESCRIPTION_NAMES = List.of(
+    /** List of diagrams using Layered algorithm with a preference for horizontal. */
+    private static final List<String> HLAYERED_DIAGRAM_DESCRIPTION_NAMES = List.of(
             // Not classified diagrams
             PACKAGE_DEPENDENCIES_DIAGRAM_NAME, // Not tested (no such diagram in IFE sample)
 
@@ -105,16 +101,6 @@ public class CapellaGmfLayoutProvider extends DefaultLayoutProvider {
             CONTEXTUAL_COMPONENT_EXTERNAL_INTERFACES_DIAGRAM_NAME, // Not tested (no such diagram in IFE sample)
             CONTEXTUAL_COMPONENT_INTERNAL_INTERFACES_DIAGRAM_NAME, // Not tested (no such diagram in IFE sample)
             INTERFACE_DIAGRAM_NAME, // Not tested (no such diagram in IFE sample)
-
-            // Mode and States diagrams
-            MODES_AND_STATES_DIAGRAM_NAME, // KO tested on "[M&S] IFE Operating Modes"
-            // Done 1- "Initial" must have a specific size idem for "Final"
-            // Done 2- Improvement (initial in first)
-            // 3- Improvement : Maybe a top down layout is better
-            MODE_STATE_DIAGRAM_NAME, // KO tested on a new diagram in IFE (same root as above diagram)
-            // 1- "Initial" must have a specific size idem for "Final", "Choice"
-            // 2- Wrong location for region (y=21)
-            // 3- Improvement (initial in first)
 
             // Capabilities diagrams
             CONTEXTUAL_MISSION_DIAGRAM_NAME,
@@ -157,6 +143,19 @@ public class CapellaGmfLayoutProvider extends DefaultLayoutProvider {
             FUNCTIONAL_CHAIN_DIAGRAM_NAME,
             OPERATIONAL_PROCESS_DESCRIPTION_DIAGRAM_NAME
             );
+    
+    /** List of diagrams using Layered algorithm with a preference for vertical */
+    private static final List<String> VLAYERED_DIAGRAM_DESCRIPTION_NAMES = List.of(
+            // Mode and States diagrams
+            MODES_AND_STATES_DIAGRAM_NAME, // KO tested on "[M&S] IFE Operating Modes"
+            // Done 1- "Initial" must have a specific size idem for "Final"
+            // Done 2- Improvement (initial in first)
+            // 3- Improvement : Maybe a top down layout is better
+            MODE_STATE_DIAGRAM_NAME // KO tested on a new diagram in IFE (same root as above diagram)
+            // 1- "Initial" must have a specific size idem for "Final", "Choice"
+            // 2- Wrong location for region (y=21)
+            // 3- Improvement (initial in first)
+    );
 
     /** List of diagrams using Mr Tree algorithm. */
     private static final List<String> MR_TREE_DIAGRAM_DESCRIPTION_NAMES = List.of(
@@ -183,32 +182,33 @@ public class CapellaGmfLayoutProvider extends DefaultLayoutProvider {
     private static final DiagramLayoutMode BUILTIN_LAYOUT_CONF = new DiagramLayoutMode("Default", null); //$NON-NLS-1$
 
     static {
-        List<DiagramLayoutMode> layeredConfigs = List.of(// Default mode is the first
+        // Reminder:
+        // Name of configuration are not local as it is used as keyword in model.
+        List<DiagramLayoutMode> hLayeredConfigs = List.of(// Default mode is the first
                 new DiagramLayoutMode("ELK Layer Horizontal", //$NON-NLS-1$
                         CapellaSiriusLayoutProvider.createLayeredConfiguration(true)),
                 new DiagramLayoutMode("ELK Layer Vertical", //$NON-NLS-1$
                         CapellaSiriusLayoutProvider.createLayeredConfiguration(false)),
                 BUILTIN_LAYOUT_CONF);
-
-        if (HANDLE_ALL_CAPELLA_DIAGRAM_TYPES) {
-            Map.of(// Groups of diagrams by layout kind
-                    layeredConfigs, LAYERED_DIAGRAM_DESCRIPTION_NAMES, // layered
-                    getOptionalConfigModes("ELK MrTree", //$NON-NLS-1$
-                            CapellaSiriusLayoutProvider.createMrTreeConfiguration()),
-                    MR_TREE_DIAGRAM_DESCRIPTION_NAMES, // mr tree
-                    getOptionalConfigModes("ELK Dot", //$NON-NLS-1$
-                            CapellaSiriusLayoutProvider.createDotConfiguration()),
-                    DOT_DIAGRAM_DESCRIPTION_NAMES // dot requires graphviz
-            ).forEach((init, names) -> names.forEach(name -> CONFIGURATIONS.put(name, init)));
-        } else {
-            LIMITED_LAYERED_DIAGRAM_DESCRIPTION_NAMES.forEach(name -> CONFIGURATIONS.put(name, layeredConfigs));
-        }
+        
+        List<DiagramLayoutMode> vLayeredConfigs = List.of(
+                hLayeredConfigs.get(1), // Vertical is default
+                hLayeredConfigs.get(0), hLayeredConfigs.get(2) 
+                );
+        
+        
+        Map.of(// Groups of diagrams by layout kind
+                hLayeredConfigs, HLAYERED_DIAGRAM_DESCRIPTION_NAMES, // layered
+                vLayeredConfigs, VLAYERED_DIAGRAM_DESCRIPTION_NAMES, // layered
+                List.of(new DiagramLayoutMode("ELK MrTree", CapellaSiriusLayoutProvider.createMrTreeConfiguration()), //$NON-NLS-1$
+                        BUILTIN_LAYOUT_CONF),
+                MR_TREE_DIAGRAM_DESCRIPTION_NAMES,
+                List.of(BUILTIN_LAYOUT_CONF, // Dot requires Graphviz, most users do not have it.
+                        new DiagramLayoutMode("ELK Dot", CapellaSiriusLayoutProvider.createDotConfiguration())), //$NON-NLS-1$
+                DOT_DIAGRAM_DESCRIPTION_NAMES
+        ).forEach((init, names) -> names.forEach(name -> CONFIGURATIONS.put(name, init)));
     }
 
-    private static List<DiagramLayoutMode> getOptionalConfigModes(String name, CustomLayoutConfiguration cfg) {
-        return List.of(new DiagramLayoutMode(name, cfg), BUILTIN_LAYOUT_CONF);
-    }
-    
     /**
      * Indicates if a Diagram Description is managed by this Layout Provider.
      * 
