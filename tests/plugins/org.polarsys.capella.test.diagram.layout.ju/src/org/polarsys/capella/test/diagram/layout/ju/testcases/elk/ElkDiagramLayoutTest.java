@@ -63,7 +63,7 @@ public class ElkDiagramLayoutTest extends BasicTestCase {
 
   private static final String REF_PATH = "expected/"; //$NON-NLS-1$
   private static final String RESULT_PATH = "actual/"; //$NON-NLS-1$
-  private static final int EXPECTED_CASE_NUMBER = 10; // Number of files in 
+  private static final int EXPECTED_CASE_NUMBER = 12; // Number of files in 
   // /org.polarsys.capella.test.diagram.layout.ju/model/ElkValidation/expected
 
   private Path projectPath;
