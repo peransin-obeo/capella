@@ -1,16 +1,16 @@
 graph _OCB__Operational_Capabilities_graph
-layout [ size: 648, 296 ]
+layout [ size: 648, 297 ]
 hierarchyHandling: INCLUDE_CHILDREN
 nodeSize.constraints: "[PORTS, NODE_LABELS, MINIMUM_SIZE]"
 algorithm: org.eclipse.elk.layered
-spacing.portPort: 13
-spacing.edgeNodeBetweenLayers: 20
 elk.direction: RIGHT
 spacing.edgeEdge: 5
 nodePlacement.bk.fixedAlignment: BALANCED
-spacing.edgeLabel: 0
-edgeLabels.sideSelection: ALWAYS_DOWN
 edgeRouting: ORTHOGONAL
+spacing.edgeLabel: 0
+spacing.edgeNodeBetweenLayers: 20
+edgeLabels.sideSelection: ALWAYS_DOWN
+spacing.portPort: 13
 noLayout: true
 node OActor_2 {
 	layout [

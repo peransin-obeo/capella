@@ -417,6 +417,18 @@ public class AbstractElkLayoutExtension implements IELKLayoutExtension {
     }
 
     /**
+     * Returns if a shape ({@link ElkNode} or {@link ElkPort}).
+     * 
+     * @param shape element to evaluate
+     * @return true if contains a label
+     */
+    protected static boolean hasInsideLabel(ElkConnectableShape shape) {
+        return shape.getLabels().stream() // any label
+                .anyMatch((l -> !l.getText().isBlank()  // is inside and with content
+                        && l.getProperty(CoreOptions.NODE_LABELS_PLACEMENT).contains(NodeLabelPlacement.INSIDE)));
+    }
+
+    /**
      * Centers the end of an edge on the horizontal side of a shape.
      * <p>
      * As result, all edges of node will be merged. Only applicable after layout.
@@ -436,7 +448,29 @@ public class AbstractElkLayoutExtension implements IELKLayoutExtension {
             point.setX(middle);
         }
     }
-        
+    
+    /**
+     * Wraps a long label (&gt; 10) on 2 lines if it contains space.
+     * <p>
+     * Depending where the space is, the result may be 3 lines.
+     * </p>
+     * 
+     * @param label the element to wrap.
+     */
+    protected static void brealkLine(ElkLabel label) {
+        String text = label.getText();
+        // beyond 10 characters, we can assume the label has space 
+        // and can be displayed on 2 lines.
+        if (text.length() > 10) {
+            // 0.4 is slightly before the middle of the label.
+            int separator = text.indexOf(' ', (int) (text.length() * 0.4));
+            if (0 <= separator) {
+                label.setWidth(40 /*icon*/ + label.getWidth() * 0.5);
+                label.setHeight(label.getHeight() * 2);
+            }
+        }
+    }
+    
     protected static KVector getParentRelativePoint(ElkConnectableShape it, ElkNode container) {
         KVector point = new KVector(it.getX(), it.getY());
         return ElkUtil.toRelative(

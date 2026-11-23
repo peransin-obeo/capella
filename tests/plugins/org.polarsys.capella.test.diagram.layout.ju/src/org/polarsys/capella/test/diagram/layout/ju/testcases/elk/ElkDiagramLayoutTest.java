@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.gmf.runtime.diagram.ui.actions.internal.ArrangeAction;
@@ -61,9 +63,9 @@ public class ElkDiagramLayoutTest extends BasicTestCase {
 
   private static final String MODEL_NAME = "ElkValidation"; //$NON-NLS-1$
 
-  private static final String REF_PATH = "expected/"; //$NON-NLS-1$
-  private static final String RESULT_PATH = "actual/"; //$NON-NLS-1$
-  private static final int EXPECTED_CASE_NUMBER = 12; // Number of files in 
+  private static final String REF_PATH = "expected"; //$NON-NLS-1$
+  private static final String RESULT_PATH = "actual"; //$NON-NLS-1$
+
   // /org.polarsys.capella.test.diagram.layout.ju/model/ElkValidation/expected
 
   private Path projectPath;
@@ -81,7 +83,7 @@ public class ElkDiagramLayoutTest extends BasicTestCase {
   }
 
   private Path getGraphFile(DDiagram diagram, String prefix) {
-    return projectPath.resolve(prefix + diagram.getName() + ElkGraphUtils.GRAPH_EXTENSION);
+    return projectPath.resolve(prefix).resolve(diagram.getName() + ElkGraphUtils.GRAPH_EXTENSION);
   }
 
   @Override
@@ -89,25 +91,35 @@ public class ElkDiagramLayoutTest extends BasicTestCase {
     prepateTest();
 
     List<String> failures = new ArrayList<>();
-    int counter = 0;
+    List<String> dones = new ArrayList<>();
 
     // We will compare N diagrams to avoid models overload.
     for (DDiagram diagram : ElkGraphUtils.getAllDiagrams(session)) {
       ElkNode graph = getArrangedGraph(diagram);
 
       if (graph != null) { // Only testable diagram
-        counter++;
+        dones.add(diagram.getName());
         Path reference = getGraphFile(diagram, REF_PATH);
         if (!ElkGraphUtils.hasSameContent(diagram.getName(), ElkGraphUtils.readGraphModel(reference), graph)) {
           failures.add(diagram.getName());
         }
       }
     }
-
-    assertEquals("Layout of Diagrams are unexpected", List.of(), failures);
-    assertEquals(EXPECTED_CASE_NUMBER, counter);
+    Collections.sort(failures);
+    assertEquals("Layout of Diagrams are unexpected", List.of(), failures); //$NON-NLS-1$
+    Collections.sort(dones);
+    assertEquals("Some cases are missing",  getExpectedCases(), dones); //$NON-NLS-1$
   }
 
+  private List<String> getExpectedCases() throws IOException {
+    return Files.list(projectPath.resolve(REF_PATH)) // In Project
+        .map(it -> it.getFileName().toString()) // all files
+        .filter(it -> it.endsWith(ElkGraphUtils.GRAPH_EXTENSION)) // of type graph
+        .map(it -> it.substring(0, it.length() - ElkGraphUtils.GRAPH_EXTENSION.length())) // basename
+        .sorted()
+        .collect(Collectors.toList());
+  }
+  
   private ElkNode getArrangedGraph(DDiagram diagram) throws Exception {
     Path reference = getGraphFile(diagram, REF_PATH);
     boolean verifiable = Files.exists(reference);

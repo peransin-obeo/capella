@@ -1,16 +1,16 @@
 graph _CRI__CapabilityRealization_1_graph
-layout [ size: 243, 185 ]
+layout [ size: 243, 194 ]
 hierarchyHandling: INCLUDE_CHILDREN
 nodeSize.constraints: "[PORTS, NODE_LABELS, MINIMUM_SIZE]"
 algorithm: org.eclipse.elk.layered
+elk.direction: RIGHT
 spacing.edgeEdge: 5
+nodePlacement.bk.fixedAlignment: BALANCED
+edgeRouting: ORTHOGONAL
 spacing.edgeLabel: 0
 spacing.edgeNodeBetweenLayers: 20
-spacing.portPort: 13
 edgeLabels.sideSelection: ALWAYS_DOWN
-nodePlacement.bk.fixedAlignment: BALANCED
-elk.direction: RIGHT
-edgeRouting: ORTHOGONAL
+spacing.portPort: 13
 noLayout: true
 node CapabilityRealization_1 {
 	layout [
@@ -60,18 +60,18 @@ node LC_3 {
 		nodeLabels.placement: "[H_CENTER, V_BOTTOM, OUTSIDE]"
 	}
 }
-node N1 {
+node req {
 	layout [
-		position: 63, 154
-		size: 26, 26
+		position: 26, 154
+		size: 100, 40
 	]
 	hierarchyHandling: INCLUDE_CHILDREN
 	nodeSize.constraints: "[PORTS, NODE_LABELS, MINIMUM_SIZE]"
 	nodeSize.minimum: "(10.0,10.0)"
-	label L4: " " {
+	label L4: "req" {
 		layout [
 			position: 1, 1
-			size: 16, 16
+			size: 35, 16
 		]
 		nodeLabels.placement: "[H_CENTER, V_CENTER, INSIDE]"
 	}

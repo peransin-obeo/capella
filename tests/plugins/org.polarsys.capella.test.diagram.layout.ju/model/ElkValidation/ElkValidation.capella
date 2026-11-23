@@ -315,7 +315,7 @@
           <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
               id="71da555a-61ab-4e23-9861-7ce96866f204" name="SF Container">
             <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
-                id="5f4930bc-7b37-41d9-9141-a65681b52858" name="subsf 1">
+                id="5f4930bc-7b37-41d9-9141-a65681b52858" name="sb 1">
               <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
                   id="1e67a30f-3bbc-4476-a7fe-a6f026cf4252" name="subsf 5"/>
             </ownedFunctions>
@@ -326,6 +326,10 @@
               <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
                   id="0af3422b-1c2c-468c-bb68-51f7ea398817" name="subsf 4"/>
             </ownedFunctions>
+            <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
+                id="c9f4b72f-bb20-430b-af7b-59d0fe45cd29" name="subsf 6 very long name"/>
+            <ownedFunctions xsi:type="org.polarsys.capella.core.data.ctx:SystemFunction"
+                id="0aa8e44c-6327-487c-9bf6-82c34674730d" name="Gather 5" kind="GATHER"/>
           </ownedFunctions>
           <ownedFunctionRealizations xsi:type="org.polarsys.capella.core.data.fa:FunctionRealization"
               id="b5849e47-a808-43b3-8124-b3da01c2ec7e" targetElement="#b70b4b72-42bb-42af-969d-a71f6ac507e9"
@@ -556,7 +560,7 @@
                 id="78cc59ea-96e2-4dab-ae13-4a7f6b47f336" name="FOP 2"/>
           </ownedFunctions>
           <ownedFunctions xsi:type="org.polarsys.capella.core.data.la:LogicalFunction"
-              id="f17fbf29-0132-4631-aec4-60d5412f623a" name="LogicalFunction 2">
+              id="f17fbf29-0132-4631-aec4-60d5412f623a" name="Logical Function 2 with long name">
             <inputs xsi:type="org.polarsys.capella.core.data.fa:FunctionInputPort"
                 id="9efbb10e-b7a3-4fe9-8113-8d6ebc6b34e4" name="FIP 1"/>
             <outputs xsi:type="org.polarsys.capella.core.data.fa:FunctionOutputPort"
@@ -593,7 +597,7 @@
         <ownedCapabilityRealizations xsi:type="org.polarsys.capella.core.data.la:CapabilityRealization"
             id="3c0f974d-5db9-4832-ab32-b6987283777f" name="CapabilityRealization 1">
           <ownedConstraints xsi:type="org.polarsys.capella.core.data.capellacore:Constraint"
-              id="ab1bb4d6-7535-468d-8cec-f7e3ffddea5e" name="">
+              id="ab1bb4d6-7535-468d-8cec-f7e3ffddea5e" name="req">
             <ownedSpecification xsi:type="org.polarsys.capella.core.data.information.datavalue:OpaqueExpression"
                 id="1afe6929-c52e-4003-86c0-e67554b45503">
               <bodies></bodies>
